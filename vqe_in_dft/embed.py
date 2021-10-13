@@ -1,17 +1,18 @@
 import logging
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Callable, List, Optional, Tuple
 
 import numpy as np
-from vqe_in_dft.localisation import *
+from vqe_in_dft.localisation import spade, mullikan, boys, ibo
 from openfermion.chem.molecular_data import spinorb_from_spatial
 from openfermion.ops.representations import InteractionOperator
 from openfermion.transforms import jordan_wigner
-from pyscf import ao2mo, cc, fci, gto, scf
+from pyscf import ao2mo, cc, gto, scf
 from vqe_in_dft.utils import parse, setup_logs
 
 logger = logging.getLogger(__name__)
 setup_logs()
+
 
 def closed_shell_subsystem(scf_method: Callable, density: np.ndarray) -> Tuple[float]:
     """
@@ -43,18 +44,17 @@ def get_active_indices(
     # Find the active indices
     active_indices = [i for i in range(len(scf_method.mo_occ) - n_env_mos)]
 
-
     # This is not the best way to simplify.
     # TODO some more sophisticated thing with frozen core
     # rather than just cutting high level MOs
     if qubits:
         # Check that the reduction is sensible
         # Needs 1 qubit per spin state
-        if qubits < 2*n_act_mos:
+        if qubits < 2 * n_act_mos:
             raise Exception(f"Not enouch qubits for active MOs, minimum {2*n_act_mos}.")
 
         logger.info("Restricting to low level MOs for %s qubits.", qubits)
-        active_indices = active_indices[:qubits//2]
+        active_indices = active_indices[: qubits // 2]
 
     return np.array(active_indices)
 
@@ -223,6 +223,7 @@ def embedding_hamiltonian(
 
     return q_ham, classical_energy
 
+
 def cli() -> None:
     """
     CLI Interface
@@ -230,19 +231,20 @@ def cli() -> None:
     setup_logs()
     args = parse()
     qham, e_classical = embedding_hamiltonian(
-        geometry=args['geometry'],
-        active_atoms=args['active_atoms'],
-        basis=args['basis'],
-        xc_functional=args['xc_functional'],
-        output=args['output'],
-        localisation=args['localisation'],
-        convergence=args['convergence'],
-        run_ccsd=args['ccsd'],
-        qubits=args['qubits'],
+        geometry=args["geometry"],
+        active_atoms=args["active_atoms"],
+        basis=args["basis"],
+        xc_functional=args["xc_functional"],
+        output=args["output"],
+        localisation=args["localisation"],
+        convergence=args["convergence"],
+        run_ccsd=args["ccsd"],
+        qubits=args["qubits"],
     )
-    print(f"Qubit Hamiltonian:")
+    print("Qubit Hamiltonian:")
     print(qham)
     print(f"Classical Energy (Ha): {e_classical}")
+
 
 if __name__ == "__main__":
     cli()

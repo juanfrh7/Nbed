@@ -20,6 +20,8 @@ pytest = "^6.2.4"
 mypy = "^0.902"
 bpython = "^0.21"
 isort = "^5.9.3"
+poetry2conda = "^0.3.0"
+types-PyYAML = "^5.4.11"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -27,3 +29,12 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 nbed = "vqe_in_dft.embed:cli"
+
+[tool.poetry2conda]
+name = "nbed"
+
+[tool.poetry2conda.dependencies]
+pyscf = { channel = "pip" }
+openfermion = { channel = "pip" }
+PennyLane = { channel = "pip" }
+PennyLane-Qchem = { channel = "pip" }

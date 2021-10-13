@@ -2,23 +2,14 @@
 
 This package provides methods to fragment molecular Hamiltonians and to simulate these using Variational Qauntum Eigensolver algorithms embedded into Density Functional Theory.
 
-## Use
+## Installation
 
-### Poetry
+### Conda
+The package dependencies are installable through conda using the `nbed.yaml` file in the top level of the package.
 
-Poetry is a packaging and dependency manager, to install it from the command line run::
-
-    pip install poetry
-
-with this installed, you can start working on the package by running:
-
-    poetry install
-
-which will create a virtual environment with the required dependencies.
-
-This virtual environment subsequently can be activated with:
-
-    poetry shell
+```
+conda env create -f <path to package>/nbed.yaml
+```
 
 ## Structure
 
